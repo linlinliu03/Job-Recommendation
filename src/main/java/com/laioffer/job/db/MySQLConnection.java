@@ -35,15 +35,16 @@ public class MySQLConnection {
             System.err.println("DB connection failed");
             return;
         }
-        String insertItemSql = "INSERT IGNORE INTO items VALUES (?, ?, ?, ?, ?)";
+        // IGNORE means if the table already has the same data then just ignore it
+        String insertItemSql = "INSERT IGNORE INTO items VALUES (?, ?, ?, ?, ?)"; // ? is for each column
         try {
             PreparedStatement statement = conn.prepareStatement(insertItemSql);
-            statement.setString(1, item.getId());
+            statement.setString(1, item.getId());// sql index starts from 1
             statement.setString(2, item.getTitle());
             statement.setString(3, item.getLocation());
             statement.setString(4, item.getCompanyLogo());
             statement.setString(5, item.getUrl());
-            statement.executeUpdate();
+            statement.executeUpdate(); // start to execute to insert
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -79,7 +80,7 @@ public class MySQLConnection {
             e.printStackTrace();
         }
     }
-
+    // no need to delete the item  since the other users might still need
     public void unsetFavoriteItems(String userId, String itemId) {
         if (conn == null) {
             System.err.println("DB connection failed");

@@ -9,7 +9,7 @@ public class MySQLTableCreation {
     public static void main(String[] args) {
         try {
 
-            // Step 1 Connect to MySQL.
+            // Connect to MySQL.
             System.out.println("Connecting to " + MySQLDBUtil.URL);
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             Connection conn = DriverManager.getConnection(MySQLDBUtil.URL);
@@ -18,7 +18,7 @@ public class MySQLTableCreation {
                 return;
             }
 
-            // Step 2 Drop tables in case they exist.
+            // Drop tables in case they exist.
             Statement statement = conn.createStatement();
             String sql = "DROP TABLE IF EXISTS keywords";
             statement.executeUpdate(sql);
@@ -32,7 +32,7 @@ public class MySQLTableCreation {
             sql = "DROP TABLE IF EXISTS users";
             statement.executeUpdate(sql);
 
-            // Step 3 Create new tables
+            // Create new tables
             sql = "CREATE TABLE items ("
                     + "item_id VARCHAR(255) NOT NULL,"
                     + "name VARCHAR(255),"
@@ -63,7 +63,7 @@ public class MySQLTableCreation {
             sql = "CREATE TABLE history ("
                     + "user_id VARCHAR(255) NOT NULL,"
                     + "item_id VARCHAR(255) NOT NULL,"
-                    + "last_favor_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+                    + "last_favor_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," // set automatically, no need to insert
                     + "PRIMARY KEY (user_id, item_id),"
                     + "FOREIGN KEY (user_id) REFERENCES users(user_id),"
                     + "FOREIGN KEY (item_id) REFERENCES items(item_id)"
