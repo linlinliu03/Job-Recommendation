@@ -1,9 +1,11 @@
 /Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/servlet/RecommendationServlet.java
 /Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/entity/ExtractRequestBody.java
 /Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/servlet/SearchServlet.java
+/Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/db/MySQLTableCreation.java
 /Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/entity/ExtractResponseItem.java
 /Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/servlet/TestServlet.java
 /Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/entity/Item.java
 /Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/external/MonkeyLearnClient.java
+/Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/db/MySQLDBUtil.java
 /Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/entity/Extraction.java
 /Users/lindaliu/Desktop/laioffer_project/project1/src/main/java/com/laioffer/job/external/GitHubClient.java
