@@ -183,6 +183,7 @@ public class MySQLConnection {
         String sql = "SELECT first_name, last_name FROM users WHERE user_id = ?";
         try {
             PreparedStatement statement = conn.prepareStatement(sql);
+            // sql starts index from 1
             statement.setString(1, userId);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
