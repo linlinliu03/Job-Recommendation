@@ -2,6 +2,7 @@ package com.laioffer.job.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.laioffer.job.db.MySQLConnection;
+import com.laioffer.job.db.RedisConnection;
 import com.laioffer.job.entity.Item;
 import com.laioffer.job.entity.ResultResponse;
 import com.laioffer.job.external.GitHubClient;
@@ -10,6 +11,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -32,15 +34,29 @@ public class SearchServlet extends HttpServlet {
             MySQLConnection connection = new MySQLConnection();
             Set<String> favoritedItemIds = connection.getFavoriteItemIds(userId);
             connection.close();
-
-            GitHubClient client = new GitHubClient();
             response.setContentType("application/json");
-            List<Item> items = client.search(lat, lon, null);
 
-            for (Item item : items) {
-                   item.setFavorite(favoritedItemIds.contains(item.getId()));
+            RedisConnection redis = new RedisConnection();
+            String cachedResult = redis.getSearchResult(lat, lon, null);
+
+            List<Item> items = null;
+            // check if it's already in cache
+            if (cachedResult != null) {
+                // use Arrays.asList, because Jackson returned result is array of Item objects so we need to convert to List
+                // of Item objects
+                items = Arrays.asList(mapper.readValue(cachedResult, Item[].class));
+            } else {
+                GitHubClient client = new GitHubClient();
+                items = client.search(lat, lon, null);
+                redis.setSearchResult(lat, lon, null, mapper.writeValueAsString(items));
             }
-            mapper.writeValue(response.getWriter(), items);
+            redis.close();
+
+
+             for (Item item : items) {
+                   item.setFavorite(favoritedItemIds.contains(item.getId()));
+             }
+             mapper.writeValue(response.getWriter(), items);
     }
 
     @Override

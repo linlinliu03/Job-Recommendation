@@ -1,13 +1,11 @@
 package com.laioffer.job.recommendation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.laioffer.job.db.MySQLConnection;
+import com.laioffer.job.db.RedisConnection;
 import com.laioffer.job.entity.Item;
 import com.laioffer.job.external.GitHubClient;
 
@@ -44,9 +42,22 @@ public class Recommendation {
         // Step 3, search based on keywords, filter out favorite items
         Set<String> visitedItemIds = new HashSet<>();
         GitHubClient client = new GitHubClient();
+        ObjectMapper mapper = new ObjectMapper();
+        RedisConnection redis = new RedisConnection();
 
         for (Map.Entry<String, Integer> keyword : keywordList) {
-            List<Item> items = client.search(lat, lon, keyword.getKey());
+            String cachedResult = redis.getSearchResult(lat, lon, keyword.getKey());
+            List<Item> items = null;
+            try {
+                if (cachedResult != null) {
+                    items = Arrays.asList(mapper.readValue(cachedResult, Item[].class));
+                } else {
+                    items = client.search(lat, lon, keyword.getKey());
+                    redis.setSearchResult(lat, lon, keyword.getKey(), mapper.writeValueAsString(items));
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
 
             for (Item item : items) {
                 if (!favoritedItemIds.contains(item.getId()) && !visitedItemIds.contains(item.getId())) {
@@ -55,6 +66,8 @@ public class Recommendation {
                 }
             }
         }
+        redis.close();
+
         return recommendedItems;
     }
 }
